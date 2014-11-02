@@ -1,28 +1,28 @@
 package icosoku;
 
 public class IcoSokuSolver {
+	private IcoSoku icosoku;
+	private int backtrackCalls;
 
-	private static IcoSoku icosoku;
-
-	public static void main(String[] args) {
-		// example data
-		int[] numbers = { 1, 3, 10, 7, 5, 4, 11, 6, 12, 8, 9, 2 };
-		int[] numbers2 = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
-		int[] numbers3 = { 6, 12, 9, 10, 7, 2, 8, 1, 3, 5, 4, 11 };
-		int[] numbers4 = { 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
-		int[] numbers5 = { 9, 4, 10, 12, 7, 8, 5, 6, 2, 1, 3, 11 };
-		int[] numbers6 = { 1, 11, 2, 9, 4, 7, 6, 5, 8, 3, 10, 12 };
-
-		long start = System.currentTimeMillis();
-
-		icosoku = new IcoSoku(numbers6);
-		System.out.println(backtrack(0));
-
-		long end = System.currentTimeMillis();
-		System.out.println("Execution time: " + (end - start) + " ms");
+	public IcoSokuSolver(IcoSoku icosoku) {
+		this.icosoku = icosoku;
 	}
 
-	public static boolean backtrack(int stage) {
+	public void solve() {
+		for (int i = 0; i < 12; i++) {
+			System.out.print("|" + icosoku.edgeNumber(i));
+		}
+		System.out.println("|");
+		// solve with timing
+		long start = System.currentTimeMillis();
+		System.out.println(backtrack(0));
+		long end = System.currentTimeMillis();
+		System.out.println("Execution time: " + (end - start) + " ms");
+		System.out.println("Number of backtrack method calls: " + backtrackCalls);
+	}
+
+	public boolean backtrack(int stage) {
+		backtrackCalls++;
 		// if final stage check the solution
 		if (stage == 20) {
 			boolean finished = icosoku.checkAll();
@@ -40,14 +40,11 @@ public class IcoSokuSolver {
 					if (icosoku.isPieceAvailable(piece)) {
 						// try each orientation in each stage
 						for (int i = 0; i < 3; i++) {
-							icosoku.setPiece(
-									icosoku.areaWithSum[stage][0], piece, i);
+							icosoku.setPiece(icosoku.areaWithSum[stage][0], piece, i);
 							// print solution
 							if (backtrack(stage + 1)) {
-								System.out.println("area "
-										+ icosoku.areaWithSum[stage][0]
-										+ " piece " + piece + " orientation "
-										+ i);
+								System.out.println("area " + icosoku.areaWithSum[stage][0] + " piece " + piece
+										+ " orientation " + i);
 								return true;
 							} else {
 								icosoku.removePiece(icosoku.areaWithSum[stage][0]);
@@ -59,5 +56,4 @@ public class IcoSokuSolver {
 			return false;
 		}
 	}
-
 }
